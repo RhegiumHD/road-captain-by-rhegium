@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Road Captain by Rhegium</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <p>PRIVATE ROUTE PLANNER</p>
+  <h1>Road Captain <span>by Rhegium</span></h1>
+  <button id="garageBtn">Garage</button>
+</header>
+
+<main>
+<section class="panel planner">
+  <textarea id="natural" placeholder="Scrivi il viaggio: devo partire da... arrivare a... voglio arrivare alle..."></textarea>
+  <button id="parseBtn">Analizza testo e compila</button>
+
+  <h2>Viaggio</h2>
+  <label>Partenza
+    <input id="origin" autocomplete="off" placeholder="Inserisci un indirizzo">
+    <div id="originSug" class="suggestions"></div>
+  </label>
+  <label>Arrivo
+    <input id="destination" autocomplete="off" placeholder="Inserisci un indirizzo">
+    <div id="destSug" class="suggestions"></div>
+  </label>
+
+  <div class="row">
+    <label>Data
+      <div class="datewrap">
+        <input id="date" type="date">
+        <button id="dateBtn" type="button" title="Apri calendario">📅</button>
+      </div>
+    </label>
+    <label>Ora <input id="time" type="time" value="20:00"></label>
+  </div>
+
+  <label>Studio itinerario
+    <select id="mode">
+      <option value="arrive">Arrivo alle ore indicate</option>
+      <option value="depart">Partenza alle ore indicate</option>
+    </select>
+  </label>
+
+  <div class="row">
+    <label>Autonomia max km <input id="maxAutonomyKm" type="number" value="200"></label>
+    <label>Sosta ogni km <input id="stopEveryKm" type="number" value="150"></label>
+  </div>
+  <div class="row">
+    <label>Finestra avanti km <input id="forwardWindowKm" type="number" value="25"></label>
+    <label>Consumo km/l <input id="consumptionKmL" type="number" value="13" step="0.1"></label>
+  </div>
+  <div class="row">
+    <label>Tipo carburante
+      <select id="fuelType">
+        <option value="benzina">Benzina</option>
+        <option value="diesel">Diesel</option>
+        <option value="gpl">GPL</option>
+        <option value="metano">Metano</option>
+      </select>
+    </label>
+    <label>Minuti sosta pieno <input id="stopMinutes" type="number" value="15"></label>
+  </div>
+  <div class="row">
+    <label>Prezzo carburante €/l <input id="fuelPrice" value="1,85"></label>
+    <button id="fuelBtn" type="button">Aggiorna prezzo</button>
+  </div>
+  <button id="calcBtn">Calcola viaggio</button>
+  <p id="log"></p>
+</section>
+
+<section class="panel dash">
+  <h2>Dashboard</h2>
+  <div class="cards">
+    <div><span>Km totali</span><strong id="km">—</strong></div>
+    <div><span>Durata guida</span><strong id="drive">—</strong></div>
+    <div><span>Partenza</span><strong id="dep">—</strong></div>
+    <div><span>Arrivo</span><strong id="arr">—</strong></div>
+    <div><span>Litri stimati</span><strong id="liters">—</strong></div>
+    <div><span>Carburante</span><strong id="cost">—</strong></div>
+    <div><span>Pedaggi</span><strong id="tolls">N/D</strong></div>
+    <div><span>Soste/POI</span><strong id="pois">—</strong></div>
+  </div>
+  <h2>Soste</h2>
+  <div id="stops">Nessun calcolo eseguito.</div>
+</section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
