@@ -1,1 +1,0 @@
-{"name":"road-captain-by-rhegium-online","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.js","test":"node tests/engine.test.js","check":"node --check server.js && node --check public/app.js && node tests/engine.test.js"},"engines":{"node":">=20"},"dependencies":{}}

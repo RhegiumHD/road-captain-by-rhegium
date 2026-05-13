@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: road-captain-by-rhegium
-    env: node
-    plan: free
-    buildCommand: "npm install"
-    startCommand: "npm start"
