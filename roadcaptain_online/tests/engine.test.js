@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { cumulative, pointAt, nearestProgress } from '../engine.js';
+const pts=[]; for(let i=0;i<=10;i++) pts.push({lat:0,lon:i*0.01});
+const dist=cumulative(pts);
+assert(dist.at(-1)>10 && dist.at(-1)<12);
+const p=pointAt(pts,dist,5);
+assert(Math.abs(p.lat)<0.001);
+const np=nearestProgress(pts,dist,{lat:0.0001,lon:0.05});
+assert(np.d<0.1);
+console.log('Engine tests OK');

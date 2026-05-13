@@ -1,0 +1,4 @@
+export function haversine(a,b){ const R=6371; const toRad=x=>x*Math.PI/180; const dLat=toRad(b.lat-a.lat); const dLon=toRad(b.lon-a.lon); const la1=toRad(a.lat), la2=toRad(b.lat); const h=Math.sin(dLat/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+export function cumulative(points){ let dist=[0]; for(let i=1;i<points.length;i++) dist[i]=dist[i-1]+haversine(points[i-1],points[i]); return dist; }
+export function pointAt(points, dist, km){ if(km<=0)return points[0]; for(let i=1;i<dist.length;i++){ if(dist[i]>=km){ const ratio=(km-dist[i-1])/(dist[i]-dist[i-1]||1); return {lat:points[i-1].lat+(points[i].lat-points[i-1].lat)*ratio, lon:points[i-1].lon+(points[i].lon-points[i-1].lon)*ratio}; } } return points.at(-1); }
+export function nearestProgress(points, dist, poi){ let best={d:Infinity, km:0}; for(let i=0;i<points.length;i++){ const d=haversine(points[i], poi); if(d<best.d) best={d, km:dist[i]}; } return best; }
