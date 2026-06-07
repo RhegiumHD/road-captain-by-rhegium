@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Road Captain by Rhegium</title>
+<meta name="theme-color" content="#0a090c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQvMhh+VY9WwVpAnfLkYwI6XDP9Mk=" crossorigin="">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="authGate" class="authGate hidden">
+  <div class="authCard">
+    <img src="/logo.png" alt="Road Captain" class="authLogo">
+    <p class="authKicker">Accesso riservato</p>
+    <h2 class="authTitle">Road Captain</h2>
+    <p class="authHint">Inserisci il codice di accesso fornito dall'amministratore.</p>
+    <input id="authCode" type="password" autocomplete="off" placeholder="Codice di accesso" inputmode="text">
+    <button id="authBtn" type="button">Entra</button>
+    <p id="authErr" class="authErr"></p>
+  </div>
+</div>
+<header>
+  <div class="brand">
+    <img src="/logo.png" alt="Road Captain logo" class="logo">
+    <div>
+      <p>SMART ROUTE PLANNER</p>
+      <h1>Road Captain <span>by Rhegium</span></h1>
+    </div>
+  </div>
+  <div class="headRight">
+    <span id="appVersion" class="appVersion"></span>
+    <div class="donate">
+      <span class="donateText">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z"/><path d="M17 9h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M7 3c-.4.6-.4 1.4 0 2M11 3c-.4.6-.4 1.4 0 2"/></svg>
+        <span class="donateLabel"><strong>Offri un caffè</strong>se ti è stato utile, aiuta a tenere il servizio online!</span>
+      </span>
+      <span class="donateBtns">
+        <a class="btnPaypal" href="https://www.paypal.com/paypalme/AntoninoTravia" target="_blank" rel="noopener">PayPal</a>
+        <a class="btnRevolut" href="https://revolut.me/rhegium" target="_blank" rel="noopener">Revolut</a>
+      </span>
+    </div>
+    <button id="feedbackBtn" class="feedbackBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.3A8.4 8.4 0 1 1 21 11.5Z"/></svg>
+      Lascia un feedback
+    </button>
+  </div>
+</header>
+
+<div id="feedbackModal" class="modal hidden">
+  <div class="modalCard">
+    <h3>Lascia un feedback</h3>
+    <p class="modalSub">Suggerimenti, problemi o idee: arrivano direttamente all'autore. Non serve lasciare contatti.</p>
+    <textarea id="fbMessage" rows="5" placeholder="Scrivi qui il tuo messaggio…"></textarea>
+    <input id="fbContact" type="text" placeholder="Come ricontattarti (email o telefono) — opzionale">
+    <div class="modalActions">
+      <button id="fbCancel" type="button" class="ghostBtn">Annulla</button>
+      <button id="fbSend" type="button" class="exportBtn">Invia feedback</button>
+    </div>
+    <div id="fbStatus" class="modalStatus"></div>
+  </div>
+</div>
+
+<main>
+<div id="loader" class="loader hidden">
+  <div class="loaderInner">
+    <div class="loaderArt">
+      <svg class="art art-wheel" viewBox="48 6 104 104" fill="none">
+        <defs><line id="rcsk" x1="100" y1="46" x2="100" y2="29" stroke="currentColor" stroke-width="2.2"/></defs>
+        <!-- ruota a raggi che gira -->
+        <g class="spin" stroke="currentColor">
+          <circle cx="100" cy="58" r="40" stroke-width="8"/>
+          <circle cx="100" cy="58" r="40" stroke-width="2.4" stroke-dasharray="2 7" opacity=".5"/>
+          <circle cx="100" cy="58" r="31" stroke-width="2.4"/>
+          <use href="#rcsk"/><use href="#rcsk" transform="rotate(30 100 58)"/><use href="#rcsk" transform="rotate(60 100 58)"/>
+          <use href="#rcsk" transform="rotate(90 100 58)"/><use href="#rcsk" transform="rotate(120 100 58)"/><use href="#rcsk" transform="rotate(150 100 58)"/>
+          <use href="#rcsk" transform="rotate(180 100 58)"/><use href="#rcsk" transform="rotate(210 100 58)"/><use href="#rcsk" transform="rotate(240 100 58)"/>
+          <use href="#rcsk" transform="rotate(270 100 58)"/><use href="#rcsk" transform="rotate(300 100 58)"/><use href="#rcsk" transform="rotate(330 100 58)"/>
+          <circle cx="100" cy="58" r="9.5" stroke-width="2.6" fill="rgba(232,177,90,.14)"/>
+          <circle cx="100" cy="58" r="3.2" fill="currentColor" stroke="none"/>
+        </g>
+      </svg>
+      <svg class="art art-pump" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M32 102V32a8 8 0 0 1 8-8h22a8 8 0 0 1 8 8v70"/>
+        <path d="M26 102h50"/>
+        <rect x="40" y="36" width="22" height="16" rx="3"/>
+        <path d="M70 48h10l9 9v28a6 6 0 0 1-12 0V62"/>
+        <g class="spray" stroke="none" fill="currentColor">
+          <circle class="drop d1" cx="90" cy="58" r="3"/>
+          <circle class="drop d2" cx="90" cy="58" r="2.3"/>
+          <circle class="drop d3" cx="90" cy="58" r="2.7"/>
+        </g>
+      </svg>
+    </div>
+    <div class="loaderMsg" id="loaderMsg"></div>
+  </div>
+</div>
+<section class="panel planner">
+  <h2>Viaggio</h2>
+  <label>Partenza
+    <input id="origin" autocomplete="off" placeholder="Inserisci un indirizzo">
+    <div id="originSug" class="suggestions"></div>
+  </label>
+  <label>Arrivo
+    <input id="destination" autocomplete="off" placeholder="Inserisci un indirizzo">
+    <div id="destSug" class="suggestions"></div>
+  </label>
+
+  <div class="waypointsBlock">
+    <div class="sectionHead">
+      <div>
+        <h3>Tappe intermedie</h3>
+        <p class="hint">Usale per forzare il percorso: verranno calcolate nell’ordine in cui le inserisci.</p>
+      </div>
+      <button id="addWaypointBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Aggiungi tappa</button>
+    </div>
+    <div id="waypoints"></div>
+  </div>
+
+  <div class="row">
+    <label>Studio itinerario
+      <select id="mode">
+        <option value="arrive">Arrivo alle ore indicate</option>
+        <option value="depart">Partenza alle ore indicate</option>
+      </select>
+    </label>
+    <label>Andatura
+      <select id="pace">
+        <option value="normal">Normale (~110 km/h)</option>
+        <option value="rapida">Rapida (~120 km/h)</option>
+        <option value="relax">Relax (~100 km/h)</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="row">
+    <label>Data
+      <div class="datewrap">
+        <input id="date" type="date">
+        <button id="dateBtn" type="button" title="Apri calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></button>
+      </div>
+    </label>
+    <label>Ora <input id="time" type="time" value="20:00"></label>
+  </div>
+
+  <div class="row">
+    <label>Capienza serbatoio litri <input id="tankCapacityL" type="number" step="0.1" min="1" placeholder="es. 15.5"></label>
+    <label>Consumo km/l <input id="consumptionKmL" type="number" step="0.1" min="1" placeholder="es. 13"></label>
+  </div>
+  <div class="row">
+    <div class="metricbox"><span>Autonomia stimata</span><strong id="autonomyKm">—</strong></div>
+    <label>Sosta ogni
+      <span class="inlineField">
+        <input id="stopEveryKm" type="number" value="150" style="flex:1">
+        <select id="stopEveryUnit" style="flex:0 0 auto;width:auto">
+          <option value="km">km</option>
+          <option value="h">ore</option>
+        </select>
+      </span>
+    </label>
+  </div>
+  <div class="row">
+    <label>Margine extra per trovare carburante (km) <input id="forwardWindowKm" type="number" value="25"></label>
+  </div>
+  <div class="row">
+    <label>Tipo carburante
+      <select id="fuelType">
+        <option value="benzina">Benzina</option>
+        <option value="diesel">Diesel</option>
+        <option value="gpl">GPL</option>
+        <option value="metano">Metano</option>
+      </select>
+    </label>
+    <div class="metricbox"><span>Durata sosta normale</span><strong>20 min</strong></div>
+  </div>
+
+  <div class="longStopBox">
+    <div class="sectionHead compact">
+      <div>
+        <h3>Soste lunghe</h3>
+        <p class="hint">Ogni sosta lunga si aggancia alla sosta carburante più vicina al suo orario. Puoi aggiungerne più di una.</p>
+      </div>
+    </div>
+    <div id="longStopList"></div>
+    <button id="addLongStopBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Aggiungi sosta lunga</button>
+  </div>
+  <div class="row">
+    <label>Prezzo carburante €/l <input id="fuelPrice" value="1,85"></label>
+    <button id="fuelBtn" type="button">Aggiorna prezzo</button>
+  </div>
+  <label class="checkline"><input id="avoidTolls" type="checkbox"> <span>Evita i pedaggi (calcola il percorso più economico)</span></label>
+  <button id="calcBtn">Calcola viaggio</button>
+  <p id="log"></p>
+</section>
+
+<section class="panel itineraryPanel">
+  <h2>Itinerario effettivo</h2>
+  <div id="printHeader"></div>
+  <div class="exportRow">
+    <button id="printBtn" class="exportBtn" type="button">Esporta PDF stampabile</button>
+    <button id="gpxBtn" class="exportBtn ghost" type="button">Scarica GPX</button>
+    <button id="gmapsBtn" class="exportBtn ghost" type="button">Apri in Google Maps</button>
+  </div>
+  <div id="addedPoiBar" class="addedPoiBar hidden"></div>
+  <div id="notice" class="notice hidden"></div>
+  <div class="cards">
+    <div class="key"><span>Km totali</span><strong id="km">—</strong></div>
+    <div class="key"><span>Durata viaggio</span><strong id="drive">—</strong><small id="driveBreak" class="cardSub"></small></div>
+    <div><span>Partenza</span><strong id="dep">—</strong></div>
+    <div><span>Arrivo</span><strong id="arr">—</strong></div>
+    <div><span>Litri stimati</span><strong id="liters">—</strong></div>
+    <div><span>Carburante</span><strong id="cost">—</strong></div>
+    <div><span>Pedaggi (stima)</span><strong id="tolls">N/D</strong></div>
+    <div><span>Totale indicativo</span><strong id="totalCost">—</strong></div>
+    <div><span>Soste</span><strong id="pois">—</strong></div>
+  </div>
+  <h2>Soste</h2>
+  <div id="stops">Nessun calcolo eseguito.</div>
+  <h2>Cosa vedere lungo l’itinerario</h2>
+  <div id="routePois" class="routePois">Calcola il viaggio per vedere i luoghi notabili lungo la rotta.</div>
+</section>
+
+<section class="panel mapPanel">
+  <h2>Mappa percorso</h2>
+  <div class="mapLegend"><span><i class="legendStop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h14"/><path d="M15 9h2.5a1.5 1.5 0 0 1 1.5 1.5V17a1.6 1.6 0 0 0 3 0v-6l-2.3-2.3"/><path d="M8 8h4"/></svg></i> Rifornimento</span><span><i class="legendRest"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6.5" y="4" width="3.6" height="16" rx="1.4"/><rect x="13.9" y="4" width="3.6" height="16" rx="1.4"/></svg></i> Sosta tecnica</span><span><i class="legendPoi"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.7 5.9 6.4.7-4.8 4.3 1.3 6.3L12 16.9 6.4 19.7l1.3-6.3-4.8-4.3 6.4-.7z"/></svg></i> POI</span></div>
+  <div id="map"></div>
+</section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/app.js"></script>
+</body>
+</html>
